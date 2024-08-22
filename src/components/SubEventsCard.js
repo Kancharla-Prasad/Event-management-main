@@ -3,6 +3,14 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+// import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import { Button, CardActionArea, CardActions, Modal, Box } from "@mui/material";
 const style = {
   position: "absolute",
@@ -18,20 +26,31 @@ const style = {
   pb: 3,
 };
 export default function SubEventCard({ subEvent }) {
-  function ChildModal() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
-      setOpen(true);
+  
+  const [childOpen, setChildOpen] = React.useState(false);
+    const handleChildOpen = () => {
+      setChildOpen(true);
     };
-    const handleClose = () => {
-      setOpen(false);
+    const handleChildClose = () => {
+      setChildOpen(false);
     };
+  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-    return (
-      <React.Fragment>
-        <Button onClick={handleOpen}>Register</Button>
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+    <React.Fragment>
         <Modal
-          open={open}
+          open={childOpen}
           onClose={handleClose}
           aria-labelledby="child-modal-title"
           aria-describedby="child-modal-description"
@@ -40,38 +59,35 @@ export default function SubEventCard({ subEvent }) {
             <h2 id="child-modal-title">Are you sure to register</h2>
 
             <Button>Pay now</Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleChildClose}>Cancel</Button>
           </Box>
         </Modal>
       </React.Fragment>
-    );
-  }
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box sx={{ ...style, width: 1300 }}>
-          <h2 id="parent-modal-title">{subEvent.name} Instructions</h2>
-          <p id="parent-modal-description" style={{ whiteSpace: "pre-wrap" }}>
-            {/* {String(subEvent.instructions).replace(/\n/g, "<br>")} */}
+      <React.Fragment>
+        <Dialog
+          fullScreen={fullScreen}
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle id="responsive-dialog-title">
+            {`${subEvent.name} Instructions`}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
             {subEvent.instructions}
-          </p>
-          <ChildModal />
-        </Box>
-      </Modal>
-
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleChildOpen}>
+              Register Now
+            </Button>
+            <Button onClick={handleClose} autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </React.Fragment>
       <Card sx={{ maxWidth: 350, margin: "auto", marginTop: "1rem" }}>
         <CardActionArea>
           <CardMedia
@@ -103,7 +119,7 @@ export default function SubEventCard({ subEvent }) {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary" onClick={handleOpen}>
+          <Button size="small" color="primary" onClick={handleClickOpen}>
             Give it a try
           </Button>
         </CardActions>
